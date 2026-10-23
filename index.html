@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deportes</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0b0f14;
+    color: #e6e9ec;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 2.5vw 3vw 6vw;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    border-bottom: 2px solid #1f2937; padding-bottom: 16px; margin-bottom: 26px;
+    flex-wrap: wrap; gap: 8px;
+  }
+  h1 { font-size: clamp(28px, 4vw, 54px); font-weight: 800; letter-spacing: -0.5px; }
+  #clock { font-size: clamp(16px, 2vw, 26px); color: #9aa4b2; }
+  .day { margin-bottom: 36px; }
+  .day-title {
+    font-size: clamp(22px, 3vw, 40px); font-weight: 700; margin-bottom: 14px;
+    padding: 8px 16px; border-radius: 10px; background: #151c26; display: inline-block;
+  }
+  .day-title.today { background: #14324e; color: #7dd3fc; }
+  .sport { margin-bottom: 22px; }
+  .sport-title { font-size: clamp(18px, 2.4vw, 28px); font-weight: 650; color: #cbd5e1; margin-bottom: 10px; }
+  .events { display: flex; flex-direction: column; gap: 9px; }
+  .ev {
+    display: flex; align-items: center; gap: 16px;
+    background: #111827; border: 1px solid #1f2937; border-radius: 12px;
+    padding: 12px 18px; font-size: clamp(16px, 2vw, 24px);
+  }
+  .ev .time { font-variant-numeric: tabular-nums; color: #7dd3fc; font-weight: 650; min-width: 88px; }
+  .ev .name { flex: 1; font-weight: 550; }
+  .ev .comp { color: #8b96a5; font-size: 0.78em; white-space: nowrap; max-width: 40%; overflow: hidden; text-overflow: ellipsis; }
+  .empty { color: #5b6472; font-style: italic; padding: 12px 18px; }
+  .err { background: #2a1215; border: 1px solid #7f1d1d; color: #fca5a5; padding: 16px; border-radius: 12px; margin: 14px 0; }
+  footer { margin-top: 30px; color: #5b6472; font-size: 14px; border-top: 1px solid #1f2937; padding-top: 16px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>📅 Deportes</h1>
+  <div id="clock"></div>
+</header>
+<main id="content">Cargando…</main>
+<footer id="foot"></footer>
+
+<script>
+/* ============================================================
+   CONFIGURACIÓN — edita aquí
+   ============================================================ */
+// API key gratuita de api-football.com (déjala "" para omitir fútbol)
+const FOOTBALL_KEY = "0dfbaacef2e6972ddeec4629944cb379";
+
+const TZ = "Europe/Madrid";
+const DAYS = 4;            // hoy + 3 días
+
+// Competiciones de fútbol (IDs de API-Football)
+const FOOTBALL_LEAGUES = [
+  { id: 140, name: "La Liga" },
+  { id: 39,  name: "Premier League" },
+  { id: 2,   name: "Champions League" },
+  { id: 3,   name: "Europa League" },
+  { id: 848, name: "Conference League" },
+  { id: 143, name: "Copa del Rey" },
+  { id: 141, name: "Segunda División" },
+];
+const SPAIN_TEAM_ID = 9;   // selección española en API-Football
+
+// Calendario estático 2026 (MotoGP + WEC/IMSA) — ACTUALIZAR UNA VEZ AL AÑO
+// Horas en UTC (el panel las convierte a hora de España). Son aproximadas.
+const STATIC_CALENDAR = [
+  // MotoGP
+  { utc: "2026-10-24T04:00:00Z", comp: "MotoGP · GP Australia", name: "Sprint", sport: "MotoGP" },
+  { utc: "2026-10-25T03:00:00Z", comp: "MotoGP · GP Australia", name: "Carrera", sport: "MotoGP" },
+  { utc: "2026-10-31T07:00:00Z", comp: "MotoGP · GP Malasia", name: "Sprint", sport: "MotoGP" },
+  { utc: "2026-11-01T07:00:00Z", comp: "MotoGP · GP Malasia", name: "Carrera", sport: "MotoGP" },
+  { utc: "2026-11-07T17:00:00Z", comp: "MotoGP · GP Qatar", name: "Sprint", sport: "MotoGP" },
+  { utc: "2026-11-08T17:00:00Z", comp: "MotoGP · GP Qatar", name: "Carrera", sport: "MotoGP" },
+  { utc: "2026-11-21T15:00:00Z", comp: "MotoGP · GP Portugal", name: "Sprint", sport: "MotoGP" },
+  { utc: "2026-11-22T13:00:00Z", comp: "MotoGP · GP Portugal", name: "Carrera", sport: "MotoGP" },
+  { utc: "2026-11-28T14:00:00Z", comp: "MotoGP · GP Valencia", name: "Sprint", sport: "MotoGP" },
+  { utc: "2026-11-29T13:00:00Z", comp: "MotoGP · GP Valencia", name: "Carrera", sport: "MotoGP" },
+  // WEC
+  { utc: "2026-11-08T12:00:00Z", comp: "WEC · 6 Horas de Monza", name: "Carrera", sport: "Resistencia" },
+];
+
+/* ============================================================
+   Utilidades de fecha/hora (zona horaria de Madrid)
+   ============================================================ */
+function madridYMD(offset = 0) {
+  const d = new Date();
+  d.setDate(d.getDate() + offset);
+  return new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(d);
+}
+function ymdFromIso(iso) {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(iso));
+}
+function fmtTime(iso) {
+  return new Intl.DateTimeFormat("es-ES", { timeZone: TZ, hour: "2-digit", minute: "2-digit" }).format(new Date(iso));
+}
+function dayLabel(offset) {
+  if (offset === 0) return "Hoy";
+  if (offset === 1) return "Mañana";
+  const d = new Date(); d.setDate(d.getDate() + offset);
+  const wd = new Intl.DateTimeFormat("es-ES", { timeZone: TZ, weekday: "long" }).format(d);
+  const md = new Intl.DateTimeFormat("es-ES", { timeZone: TZ, day: "numeric", month: "long" }).format(d);
+  return wd.charAt(0).toUpperCase() + wd.slice(1) + " " + md;
+}
+
+/* ============================================================
+   F1 — Jolpica (gratis, sin clave)
+   ============================================================ */
+async function loadF1() {
+  const year = new Date().getFullYear();
+  const r = await fetch(`https://api.jolpi.ca/ergast/f1/${year}.json`);
+  const j = await r.json();
+  const races = j.MRData.RaceTable.Races || [];
+  const today = madridYMD(0);
+  const max = madridYMD(DAYS - 1);
+  const out = [];
+
+  for (const race of races) {
+    const sessions = [];
+    if (race.FirstPractice)  sessions.push({ t: race.FirstPractice,  n: "Libres 1" });
+    if (race.SecondPractice) sessions.push({ t: race.SecondPractice, n: "Libres 2" });
+    if (race.ThirdPractice)  sessions.push({ t: race.ThirdPractice,  n: "Libres 3" });
+    if (race.Sprint)         sessions.push({ t: race.Sprint,         n: "Sprint" });
+    if (race.Qualifying)     sessions.push({ t: race.Qualifying,     n: "Clasificación" });
+    sessions.push({ t: { date: race.date, time: race.time }, n: "Carrera" });
+
+    for (const s of sessions) {
+      let time = s.t.time || "00:00:00Z";
+      if (!/Z$/.test(time)) time += "Z";
+      const iso = `${s.t.date}T${time}`;
+      const date = ymdFromIso(iso);
+      if (date >= today && date <= max) {
+        out.push({ sport: "F1", comp: race.raceName, name: s.n, iso, date });
+      }
+    }
+  }
+  return out;
+}
+
+/* ============================================================
+   Fútbol — API-Football (clave gratuita)
+   ============================================================ */
+async function loadFootball() {
+  if (!FOOTBALL_KEY) return [];
+  const wanted = new Set(FOOTBALL_LEAGUES.map(l => l.id));
+  const names = Object.fromEntries(FOOTBALL_LEAGUES.map(l => [l.id, l.name]));
+  const today = madridYMD(0);
+  const max = madridYMD(DAYS - 1);
+  const out = [];
+
+  for (let i = 0; i < DAYS; i++) {
+    const d = madridYMD(i);
+    const r = await fetch(`https://v3.football.api-sports.io/fixtures?date=${d}`, {
+      headers: { "x-apisports-key": FOOTBALL_KEY }
+    });
+    const j = await r.json();
+    for (const f of j.response || []) {
+      const isSpain = f.teams.home.id === SPAIN_TEAM_ID || f.teams.away.id === SPAIN_TEAM_ID;
+      if (wanted.has(f.league.id) || isSpain) {
+        const iso = f.fixture.date;               // ya viene en ISO con offset
+        const date = ymdFromIso(iso);
+        if (date < today || date > max) continue;
+        const comp = isSpain ? "Selección española" : (names[f.league.id] || f.league.name);
+        out.push({ sport: "Fútbol", comp, name: `${f.teams.home.name} vs ${f.teams.away.name}`, iso, date });
+      }
+    }
+  }
+  return out;
+}
+
+/* ============================================================
+   Render
+   ============================================================ */
+async function load() {
+  try {
+    const [f1, foot] = await Promise.all([loadF1(), loadFootball()]);
+    const events = [...f1, ...foot];
+
+    const buckets = {};
+    for (let i = 0; i < DAYS; i++) buckets[madridYMD(i)] = [];
+    for (const e of events) if (buckets[e.date]) buckets[e.date].push(e);
+    for (const k in buckets) buckets[k].sort((a, b) => (a.iso || "").localeCompare(b.iso || ""));
+
+    const order = ["Fútbol", "F1", "MotoGP", "Resistencia"];
+    const icons = { "Fútbol": "⚽", "F1": "🏎️", "MotoGP": "🏍️", "Resistencia": "⏱️" };
+
+    let html = "";
+    for (let i = 0; i < DAYS; i++) {
+      const d = madridYMD(i);
+      const evs = buckets[d];
+      html += `<div class="day"><div class="day-title${i === 0 ? " today" : ""}">${dayLabel(i)}</div>`;
+      if (evs.length === 0) {
+        html += `<div class="empty">Sin eventos programados</div>`;
+      } else {
+        const bySport = {};
+        for (const e of evs) (bySport[e.sport] = bySport[e.sport] || []).push(e);
+        for (const sport of order) {
+          const list = bySport[sport];
+          if (!list) continue;
+          html += `<div class="sport"><div class="sport-title">${icons[sport] || ""} ${sport}</div><div class="events">`;
+          for (const e of list) {
+            html += `<div class="ev"><span class="time">${fmtTime(e.iso)}</span><span class="name">${e.name}</span><span class="comp">${e.comp}</span></div>`;
+          }
+          html += `</div></div>`;
+        }
+      }
+      html += `</div>`;
+    }
+    document.getElementById("content").innerHTML = html;
+    const fuentes = ["Jolpica (F1)"];
+    if (FOOTBALL_KEY) fuentes.push("API-Football (fútbol)");
+    document.getElementById("foot").textContent =
+      `Actualizado ${new Date().toLocaleTimeString("es-ES", { timeZone: TZ })} · Fuentes: ${fuentes.join(", ")}`;
+  } catch (err) {
+    document.getElementById("content").innerHTML = `<div class="err">Error cargando datos: ${err.message}</div>`;
+  }
+}
+
+function tick() {
+  document.getElementById("clock").textContent = new Date().toLocaleString("es-ES", {
+    timeZone: TZ, weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit"
+  });
+}
+tick();
+setInterval(tick, 30000);
+load();
+setInterval(load, 30 * 60 * 1000);   // refrescar cada 30 min
+</script>
+</body>
+</html>
