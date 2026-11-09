@@ -1,17 +1,17 @@
 {
-  "lookaheadDays": 14,
+  "lookaheadDays": 21,
   "maxEvents": 20,
   "cutoffHours": 3,
-  "championsLeagueId": 2,
-  "priorityTeamIds": [541, 723, 530, 529, 33, 50, 85, 40, 42],
-  "highlightTeamIds": [541, 723],
+  "f1IncludePractice": false,
+  "espnLeagues": ["esp.1", "esp.2", "eng.1", "fra.1", "uefa.champions"],
+  "championsLeagueSlug": "uefa.champions",
+  "priorityTeamIds": [86, 6832, 1068, 83, 360, 382, 160, 364, 359],
+  "highlightTeamIds": [86, 6832],
   "leagueNames": {
-    "2": "Champions League",
-    "3": "Europa League",
-    "848": "Conference League",
-    "140": "La Liga",
-    "39": "Premier League",
-    "143": "Copa del Rey",
-    "141": "Segunda División"
+    "esp.1": "La Liga",
+    "esp.2": "Segunda División",
+    "eng.1": "Premier League",
+    "fra.1": "Ligue 1",
+    "uefa.champions": "Champions League"
   }
 }

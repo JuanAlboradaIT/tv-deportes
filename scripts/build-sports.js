@@ -1,22 +1,25 @@
 // Genera sports.json (lo que descarga la app de la TV).
-// Fuentes: F1 (Jolpica, sin clave), fútbol (API-Football, clave en FOOTBALL_KEY) y MotoGP (motogp.json).
+// Fuentes: F1 (Jolpica, sin clave), fútbol (ESPN, sin clave) y MotoGP (motogp.json).
 // Editar config.json / motogp.json y relanzar el Action para cambiar el panel sin tocar la TV.
 const fs = require('fs');
 
-const TZ = 'Europe/Madrid';
 const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 const motogp = JSON.parse(fs.readFileSync('motogp.json', 'utf8'));
-const KEY = process.env.FOOTBALL_KEY || '';
 
 const now = new Date();
 const maxDate = new Date(now.getTime() + config.lookaheadDays * 86400000);
+const cutoff = new Date(now.getTime() - (config.cutoffHours || 3) * 3600000);
 
 const events = [];
+const seen = new Set();
 
 function addEvent(iso, name, comp, highlight) {
   const d = new Date(iso);
   if (isNaN(d.getTime())) return;
-  if (d < now || d > maxDate) return; // solo desde ahora hasta el horizonte
+  if (d < cutoff || d > maxDate) return; // desde hace 3h hasta el horizonte
+  const key = `${iso}|${name}`;
+  if (seen.has(key)) return;
+  seen.add(key);
   events.push({ iso, name, comp, highlight: !!highlight });
 }
 
@@ -26,12 +29,13 @@ async function fetchF1() {
   const res = await fetch(`https://api.jolpi.ca/ergast/f1/${year}.json`);
   const j = await res.json();
   const races = (j.MRData && j.MRData.RaceTable && j.MRData.RaceTable.Races) || [];
+  const includePractice = !!config.f1IncludePractice;
   for (const race of races) {
     const raceName = String(race.raceName || '').replace('Grand Prix', 'GP').trim();
     const sessions = [];
-    if (race.FirstPractice) sessions.push({ t: race.FirstPractice, n: 'Libres 1' });
-    if (race.SecondPractice) sessions.push({ t: race.SecondPractice, n: 'Libres 2' });
-    if (race.ThirdPractice) sessions.push({ t: race.ThirdPractice, n: 'Libres 3' });
+    if (includePractice && race.FirstPractice) sessions.push({ t: race.FirstPractice, n: 'Libres 1' });
+    if (includePractice && race.SecondPractice) sessions.push({ t: race.SecondPractice, n: 'Libres 2' });
+    if (includePractice && race.ThirdPractice) sessions.push({ t: race.ThirdPractice, n: 'Libres 3' });
     if (race.Sprint) sessions.push({ t: race.Sprint, n: 'Sprint' });
     if (race.Qualifying) sessions.push({ t: race.Qualifying, n: 'Clasif.' });
     sessions.push({ t: { date: race.date, time: race.time }, n: 'Carrera' });
@@ -43,34 +47,53 @@ async function fetchF1() {
   }
 }
 
-// ---- Fútbol ----
-function madridYMD(d) {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+// ---- Fútbol (ESPN, sin clave) ----
+async function fetchEspnMonth(slug, yyyymm) {
+  const url = `https://site.api.espn.com/apis/site/v2/sports/soccer/${slug}/scoreboard?dates=${yyyymm}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const j = await res.json();
+  return j.events || [];
 }
 
 async function fetchFootball() {
-  if (!KEY) return;
   const wanted = new Set(config.priorityTeamIds);
   const highlight = new Set(config.highlightTeamIds);
-  for (let i = 0; i < config.lookaheadDays; i++) {
-    const day = new Date(now.getTime() + i * 86400000);
-    const ymd = madridYMD(day);
-    try {
-      const res = await fetch(`https://v3.football.api-sports.io/fixtures?date=${ymd}`, {
-        headers: { 'x-apisports-key': KEY },
-      });
-      const j = await res.json();
-      for (const f of j.response || []) {
-        const homeId = f.teams.home.id, awayId = f.teams.away.id;
-        const isPriority = wanted.has(homeId) || wanted.has(awayId);
-        const isChampions = f.league.id === config.championsLeagueId;
-        if (!isPriority && !isChampions) continue;
-        const hl = highlight.has(homeId) || highlight.has(awayId);
-        const comp = config.leagueNames[String(f.league.id)] || f.league.name;
-        addEvent(f.fixture.date, `${f.teams.home.name} vs ${f.teams.away.name}`, comp, hl);
+
+  // Meses que toca el horizonte (normalmente uno; dos si cruza de mes).
+  const months = new Set();
+  for (let t = cutoff.getTime(); t <= maxDate.getTime(); t += 86400000) {
+    const d = new Date(t);
+    months.add(`${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}`);
+  }
+
+  for (const slug of config.espnLeagues) {
+    for (const yyyymm of months) {
+      let fixtures;
+      try {
+        fixtures = await fetchEspnMonth(slug, yyyymm);
+      } catch (e) {
+        console.error('espn', slug, yyyymm, e.message);
+        continue;
       }
-    } catch (e) {
-      console.error('football', ymd, e.message);
+      for (const ev of fixtures) {
+        const comp = (ev.competitions && ev.competitions[0]) || {};
+        const competitors = comp.competitors || [];
+        const ids = competitors
+          .map((c) => Number(c.team && c.team.id))
+          .filter((id) => !isNaN(id));
+        const isPriority = ids.some((id) => wanted.has(id));
+        const isChampions = slug === config.championsLeagueSlug;
+        if (!isPriority && !isChampions) continue;
+
+        const home = competitors.find((c) => c.homeAway === 'home');
+        const away = competitors.find((c) => c.homeAway === 'away');
+        if (!home || !away) continue;
+
+        const name = `${home.team.displayName} vs ${away.team.displayName}`;
+        const hl = ids.some((id) => highlight.has(id));
+        addEvent(ev.date, name, config.leagueNames[slug] || slug, hl);
+      }
     }
   }
 }
@@ -81,12 +104,11 @@ function addMotoGp() {
 }
 
 async function main() {
-  await fetchF1();
-  await fetchFootball();
+  await Promise.allSettled([fetchF1(), fetchFootball()]);
   addMotoGp();
 
   events.sort((a, b) => new Date(a.iso) - new Date(b.iso));
-  const out = events.slice(0, config.maxEvents);
+  const out = events.slice(0, config.maxEvents || 20);
 
   fs.writeFileSync('sports.json', JSON.stringify(out, null, 1));
   console.log(`sports.json: ${out.length} eventos`);

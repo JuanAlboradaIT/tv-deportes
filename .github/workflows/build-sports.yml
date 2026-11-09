@@ -4,6 +4,13 @@ on:
   schedule:
     - cron: "0 */4 * * *"
   workflow_dispatch:
+  push:
+    branches: [master]
+    paths:
+      - "config.json"
+      - "motogp.json"
+      - "scripts/build-sports.js"
+      - ".github/workflows/build-sports.yml"
 
 permissions:
   contents: write
@@ -17,8 +24,6 @@ jobs:
         with:
           node-version: "20"
       - name: Generar sports.json
-        env:
-          FOOTBALL_KEY: ${{ secrets.FOOTBALL_KEY }}
         run: node scripts/build-sports.js
       - name: Publicar sports.json
         run: |
