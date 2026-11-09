@@ -1,0 +1,17 @@
+{
+  "lookaheadDays": 14,
+  "maxEvents": 20,
+  "cutoffHours": 3,
+  "championsLeagueId": 2,
+  "priorityTeamIds": [541, 723, 530, 529, 33, 50, 85, 40, 42],
+  "highlightTeamIds": [541, 723],
+  "leagueNames": {
+    "2": "Champions League",
+    "3": "Europa League",
+    "848": "Conference League",
+    "140": "La Liga",
+    "39": "Premier League",
+    "143": "Copa del Rey",
+    "141": "Segunda División"
+  }
+}
