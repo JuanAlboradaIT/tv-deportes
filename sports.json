@@ -1,0 +1,44 @@
+[
+ {
+  "iso": "2026-11-20T00:30:00Z",
+  "name": "Libres 1",
+  "comp": "Las Vegas GP",
+  "highlight": true
+ },
+ {
+  "iso": "2026-11-20T04:00:00Z",
+  "name": "Libres 2",
+  "comp": "Las Vegas GP",
+  "highlight": true
+ },
+ {
+  "iso": "2026-11-21T00:30:00Z",
+  "name": "Libres 3",
+  "comp": "Las Vegas GP",
+  "highlight": true
+ },
+ {
+  "iso": "2026-11-21T04:00:00Z",
+  "name": "Clasif.",
+  "comp": "Las Vegas GP",
+  "highlight": true
+ },
+ {
+  "iso": "2026-11-21T15:00:00Z",
+  "name": "Sprint",
+  "comp": "MotoGP · GP Portugal",
+  "highlight": true
+ },
+ {
+  "iso": "2026-11-22T04:00:00Z",
+  "name": "Carrera",
+  "comp": "Las Vegas GP",
+  "highlight": true
+ },
+ {
+  "iso": "2026-11-22T13:00:00Z",
+  "name": "Carrera",
+  "comp": "MotoGP · GP Portugal",
+  "highlight": true
+ }
+]
