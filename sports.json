@@ -1,11 +1,5 @@
 [
  {
-  "iso": "2026-11-14T17:30Z",
-  "name": "Almería vs FC Andorra",
-  "comp": "Segunda División",
-  "highlight": true
- },
- {
   "iso": "2026-11-21T04:00:00Z",
   "name": "Clasif.",
   "comp": "Las Vegas GP",
@@ -118,5 +112,11 @@
   "name": "RB Leipzig vs Lens",
   "comp": "Champions League",
   "highlight": false
+ },
+ {
+  "iso": "2026-11-24T20:00Z",
+  "name": "Real Madrid vs PSV Eindhoven",
+  "comp": "Champions League",
+  "highlight": true
  }
 ]
