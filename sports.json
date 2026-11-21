@@ -1,23 +1,5 @@
 [
  {
-  "iso": "2026-11-21T15:00:00Z",
-  "name": "Sprint",
-  "comp": "MotoGP · GP Portugal",
-  "highlight": true
- },
- {
-  "iso": "2026-11-21T16:15Z",
-  "name": "Nice vs Paris Saint-Germain",
-  "comp": "Ligue 1",
-  "highlight": false
- },
- {
-  "iso": "2026-11-21T17:30Z",
-  "name": "Newcastle United vs Arsenal",
-  "comp": "Premier League",
-  "highlight": false
- },
- {
   "iso": "2026-11-21T20:00Z",
   "name": "Real Madrid vs Celta Vigo",
   "comp": "La Liga",
@@ -116,6 +98,24 @@
  {
   "iso": "2026-11-25T17:45Z",
   "name": "Sabah FK vs Barcelona",
+  "comp": "Champions League",
+  "highlight": false
+ },
+ {
+  "iso": "2026-11-25T17:45Z",
+  "name": "Slavia Prague vs Villarreal",
+  "comp": "Champions League",
+  "highlight": false
+ },
+ {
+  "iso": "2026-11-25T20:00Z",
+  "name": "Atlético Madrid vs Viking FK",
+  "comp": "Champions League",
+  "highlight": false
+ },
+ {
+  "iso": "2026-11-25T20:00Z",
+  "name": "Club Brugge vs Liverpool",
   "comp": "Champions League",
   "highlight": false
  }
