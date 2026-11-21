@@ -1,17 +1,5 @@
 [
  {
-  "iso": "2026-11-21T04:00:00Z",
-  "name": "Clasif.",
-  "comp": "Las Vegas GP",
-  "highlight": true
- },
- {
-  "iso": "2026-11-21T12:30Z",
-  "name": "Manchester City vs Fulham",
-  "comp": "Premier League",
-  "highlight": false
- },
- {
   "iso": "2026-11-21T15:00:00Z",
   "name": "Sprint",
   "comp": "MotoGP · GP Portugal",
@@ -118,5 +106,17 @@
   "name": "Real Madrid vs PSV Eindhoven",
   "comp": "Champions League",
   "highlight": true
+ },
+ {
+  "iso": "2026-11-24T20:00Z",
+  "name": "Slovan Bratislava vs Real Betis",
+  "comp": "Champions League",
+  "highlight": false
+ },
+ {
+  "iso": "2026-11-25T17:45Z",
+  "name": "Sabah FK vs Barcelona",
+  "comp": "Champions League",
+  "highlight": false
  }
 ]
