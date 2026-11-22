@@ -1,23 +1,5 @@
 [
  {
-  "iso": "2026-11-22T13:00Z",
-  "name": "Barcelona vs Villarreal",
-  "comp": "La Liga",
-  "highlight": false
- },
- {
-  "iso": "2026-11-22T13:00:00Z",
-  "name": "Carrera",
-  "comp": "MotoGP · GP Portugal",
-  "highlight": true
- },
- {
-  "iso": "2026-11-22T16:30Z",
-  "name": "Liverpool vs Manchester United",
-  "comp": "Premier League",
-  "highlight": false
- },
- {
   "iso": "2026-11-22T20:00Z",
   "name": "Getafe vs Atlético Madrid",
   "comp": "La Liga",
@@ -116,6 +98,24 @@
  {
   "iso": "2026-11-25T20:00Z",
   "name": "Lille vs Bayern Munich",
+  "comp": "Champions League",
+  "highlight": false
+ },
+ {
+  "iso": "2026-11-25T20:00Z",
+  "name": "Paris Saint-Germain vs AS Roma",
+  "comp": "Champions League",
+  "highlight": false
+ },
+ {
+  "iso": "2026-11-25T20:00Z",
+  "name": "Shakhtar Donetsk vs Fenerbahce",
+  "comp": "Champions League",
+  "highlight": false
+ },
+ {
+  "iso": "2026-11-25T20:00Z",
+  "name": "Sporting CP vs Manchester United",
   "comp": "Champions League",
   "highlight": false
  }
