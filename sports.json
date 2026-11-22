@@ -1,11 +1,5 @@
 [
  {
-  "iso": "2026-11-21T20:00Z",
-  "name": "Real Madrid vs Celta Vigo",
-  "comp": "La Liga",
-  "highlight": true
- },
- {
   "iso": "2026-11-22T04:00:00Z",
   "name": "Carrera",
   "comp": "Las Vegas GP",
@@ -116,6 +110,12 @@
  {
   "iso": "2026-11-25T20:00Z",
   "name": "Club Brugge vs Liverpool",
+  "comp": "Champions League",
+  "highlight": false
+ },
+ {
+  "iso": "2026-11-25T20:00Z",
+  "name": "Internazionale vs VfB Stuttgart",
   "comp": "Champions League",
   "highlight": false
  }
