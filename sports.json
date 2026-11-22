@@ -1,11 +1,5 @@
 [
  {
-  "iso": "2026-11-22T04:00:00Z",
-  "name": "Carrera",
-  "comp": "Las Vegas GP",
-  "highlight": true
- },
- {
   "iso": "2026-11-22T13:00Z",
   "name": "Barcelona vs Villarreal",
   "comp": "La Liga",
@@ -116,6 +110,12 @@
  {
   "iso": "2026-11-25T20:00Z",
   "name": "Internazionale vs VfB Stuttgart",
+  "comp": "Champions League",
+  "highlight": false
+ },
+ {
+  "iso": "2026-11-25T20:00Z",
+  "name": "Lille vs Bayern Munich",
   "comp": "Champions League",
   "highlight": false
  }
