@@ -1,11 +1,5 @@
 [
  {
-  "iso": "2026-11-22T20:00Z",
-  "name": "Getafe vs Atlético Madrid",
-  "comp": "La Liga",
-  "highlight": false
- },
- {
   "iso": "2026-11-23T19:30Z",
   "name": "Ceuta vs Almería",
   "comp": "Segunda División",
@@ -118,5 +112,11 @@
   "name": "Sporting CP vs Manchester United",
   "comp": "Champions League",
   "highlight": false
+ },
+ {
+  "iso": "2026-11-28T14:00:00Z",
+  "name": "Sprint",
+  "comp": "MotoGP · GP Valencia",
+  "highlight": true
  }
 ]
