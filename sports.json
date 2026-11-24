@@ -1,11 +1,5 @@
 [
  {
-  "iso": "2026-11-23T19:30Z",
-  "name": "Ceuta vs Almería",
-  "comp": "Segunda División",
-  "highlight": true
- },
- {
   "iso": "2026-11-24T17:45Z",
   "name": "Bodo/Glimt vs LASK Linz",
   "comp": "Champions League",
@@ -118,5 +112,11 @@
   "name": "Sprint",
   "comp": "MotoGP · GP Valencia",
   "highlight": true
+ },
+ {
+  "iso": "2026-11-28T15:00Z",
+  "name": "Manchester United vs Brentford",
+  "comp": "Premier League",
+  "highlight": false
  }
 ]
