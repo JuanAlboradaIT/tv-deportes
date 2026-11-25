@@ -1,59 +1,5 @@
 [
  {
-  "iso": "2026-11-24T17:45Z",
-  "name": "Bodo/Glimt vs LASK Linz",
-  "comp": "Champions League",
-  "highlight": false
- },
- {
-  "iso": "2026-11-24T17:45Z",
-  "name": "Galatasaray vs Aston Villa",
-  "comp": "Champions League",
-  "highlight": false
- },
- {
-  "iso": "2026-11-24T20:00Z",
-  "name": "Arsenal vs Borussia Dortmund",
-  "comp": "Champions League",
-  "highlight": false
- },
- {
-  "iso": "2026-11-24T20:00Z",
-  "name": "Como vs AEK Athens",
-  "comp": "Champions League",
-  "highlight": false
- },
- {
-  "iso": "2026-11-24T20:00Z",
-  "name": "Feyenoord Rotterdam vs FC Porto",
-  "comp": "Champions League",
-  "highlight": false
- },
- {
-  "iso": "2026-11-24T20:00Z",
-  "name": "Manchester City vs Napoli",
-  "comp": "Champions League",
-  "highlight": false
- },
- {
-  "iso": "2026-11-24T20:00Z",
-  "name": "RB Leipzig vs Lens",
-  "comp": "Champions League",
-  "highlight": false
- },
- {
-  "iso": "2026-11-24T20:00Z",
-  "name": "Real Madrid vs PSV Eindhoven",
-  "comp": "Champions League",
-  "highlight": true
- },
- {
-  "iso": "2026-11-24T20:00Z",
-  "name": "Slovan Bratislava vs Real Betis",
-  "comp": "Champions League",
-  "highlight": false
- },
- {
   "iso": "2026-11-25T17:45Z",
   "name": "Sabah FK vs Barcelona",
   "comp": "Champions League",
@@ -116,6 +62,60 @@
  {
   "iso": "2026-11-28T15:00Z",
   "name": "Manchester United vs Brentford",
+  "comp": "Premier League",
+  "highlight": false
+ },
+ {
+  "iso": "2026-11-28T17:30Z",
+  "name": "Elche vs Atlético Madrid",
+  "comp": "La Liga",
+  "highlight": false
+ },
+ {
+  "iso": "2026-11-28T18:00:00Z",
+  "name": "Clasif.",
+  "comp": "Qatar GP",
+  "highlight": true
+ },
+ {
+  "iso": "2026-11-28T19:45Z",
+  "name": "Paris Saint-Germain vs Lorient",
+  "comp": "Ligue 1",
+  "highlight": false
+ },
+ {
+  "iso": "2026-11-28T20:00Z",
+  "name": "Real Madrid vs Alavés",
+  "comp": "La Liga",
+  "highlight": true
+ },
+ {
+  "iso": "2026-11-29T12:00Z",
+  "name": "Everton vs Liverpool",
+  "comp": "Premier League",
+  "highlight": false
+ },
+ {
+  "iso": "2026-11-29T13:00:00Z",
+  "name": "Carrera",
+  "comp": "MotoGP · GP Valencia",
+  "highlight": true
+ },
+ {
+  "iso": "2026-11-29T15:15Z",
+  "name": "Deportivo vs Barcelona",
+  "comp": "La Liga",
+  "highlight": false
+ },
+ {
+  "iso": "2026-11-29T16:00:00Z",
+  "name": "Carrera",
+  "comp": "Qatar GP",
+  "highlight": true
+ },
+ {
+  "iso": "2026-11-29T16:30Z",
+  "name": "Arsenal vs Manchester City",
   "comp": "Premier League",
   "highlight": false
  }
